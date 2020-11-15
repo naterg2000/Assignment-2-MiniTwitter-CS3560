@@ -20,7 +20,7 @@ import java.awt.GridLayout;
  *
  */
 
-public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!!!!!
+public class TreeView extends JPanel {      
 
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;

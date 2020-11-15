@@ -9,7 +9,7 @@ package assignment.pkg2;
  *
  * @author nathangoshay
  */
-public class Driver {   //singleton pattern, I thin?????
+public class Driver {   
     
     public static void main(String[] args) {    
         

@@ -9,7 +9,7 @@ package assignment.pkg2;
  *
  * @author nathangoshay
  */
-public interface Subject {  //pbserver pattern
+public interface Subject {  //observer pattern
     
     public void attach(Observer observer);
     

@@ -21,7 +21,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 
 
-public class AddUserPanel extends ParentPanel {     //REWRITE THE NAMES AND SUCH!!!!
+public class AddUserPanel extends ParentPanel {     
 
     private JPanel treePanel;
     private Map<String, Observer> allUsers;
