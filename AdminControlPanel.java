@@ -23,7 +23,7 @@ import java.awt.GridBagConstraints;
  * */
 
 
-public class AdminControlPanel extends ParentPanel {      //REWRITE NAMES AND SUCH AND CHANGE AUTHOR ABOVE^^
+public class AdminControlPanel extends ParentPanel {      
 
     private static AdminControlPanel INSTANCE;
 
