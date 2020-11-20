@@ -3,7 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment.pkg2;
+package assignment.pkg2.Panels.AdminView;
+
+import assignment.pkg2.Observer;
+import assignment.pkg2.SingleUser;
+import assignment.pkg2.SpecificInfo;
+import assignment.pkg2.TreeView;
+import assignment.pkg2.User;
+import assignment.pkg2.UserGroup;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +25,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  *
  * @author nathangoshay
+ * Text Fields and Buttons for adding SingleUser and GroupsUser
  */
 
 

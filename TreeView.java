@@ -17,10 +17,11 @@ import java.awt.GridLayout;
 /**
  *
  * @author nathangoshay
+ * TREE View Panel on AdminControlPanel
  *
  */
 
-public class TreeView extends JPanel {      
+public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!!!!!
 
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;

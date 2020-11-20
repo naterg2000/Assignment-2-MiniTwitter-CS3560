@@ -5,11 +5,13 @@
  */
 package assignment.pkg2;
 
+import assignment.pkg2.Panels.AdminView.AdminControlPanel;
+
 /**
  *
  * @author nathangoshay
  */
-public class Driver {   
+public class Driver {   //singleton pattern, I thin?????
     
     public static void main(String[] args) {    
         

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment.pkg2;
+package assignment.pkg2.Panels.AdminView;
 
 /**
  *
- * @author nathangoshay
+ * @author nater
  */
 public class ShowInfoPanel {
     

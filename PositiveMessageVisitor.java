@@ -7,7 +7,7 @@ package assignment.pkg2;
 
 /**
  *
- * @author nathangoshay
+ * @author nater
  */
 public class PositiveMessageVisitor implements Visitor {
 

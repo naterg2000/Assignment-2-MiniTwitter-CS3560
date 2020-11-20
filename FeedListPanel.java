@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment.pkg2;
+package assignment.pkg2.Panels.UserInfoView;
+
+import assignment.pkg2.Panels.AdminView.ParentPanel;
 
 /**
  *
  * @author nathangoshay
  */
-public interface Subject {  //pbserver pattern
+public class FeedListPanel extends ParentPanel {
     
-    public void attach(Observer observer);
-    
-    public void notifyObservers();
+    //displays this user's feed, which is other users' tweets and such
     
 }

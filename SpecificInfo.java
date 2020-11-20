@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author nathangoshay
+ * @author nater
  */
 public class SpecificInfo {
     
