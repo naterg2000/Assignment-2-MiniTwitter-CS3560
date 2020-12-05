@@ -21,7 +21,7 @@ public class SingleUser extends User implements Subject {
     
     
     public String latestMessage;
-    public int positiveMessageCount;
+    public int positiveMessageCount, messageCount = 0;
     
     public Map<String, Observer> followersList;
     public Map<String, Subject> followingList;
@@ -36,6 +36,9 @@ public class SingleUser extends User implements Subject {
         followingList = new HashMap<String, Subject>();
         followersList.put(this.getUniqueID(), this);
         tweetFeed = new ArrayList<>();
+        
+        //A3, prints out creation time to the console
+        System.out.println(super.getCreationtime());
         
     }
     
@@ -54,6 +57,10 @@ public class SingleUser extends User implements Subject {
         
         return followingList;
         
+    }
+    
+    public int getMessageCount() {
+        return messageCount;
     }
     
     public int getPositiveTweetCount() {
@@ -106,6 +113,8 @@ public class SingleUser extends User implements Subject {
         }
         
         notifyObservers();
+        super.lastUpdatedTime = System.currentTimeMillis();
+        System.out.println(super.lastUpdatedTime);
         
     }
     

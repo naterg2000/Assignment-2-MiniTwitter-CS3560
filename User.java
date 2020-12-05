@@ -15,6 +15,7 @@ public abstract class User extends DefaultMutableTreeNode implements Observer { 
     
     String uniqueID;
     int totalTweets = 0;
+    long creationTime, lastUpdatedTime;
     
     //make User constructor here!
     public User(String ID) {
@@ -22,6 +23,7 @@ public abstract class User extends DefaultMutableTreeNode implements Observer { 
         super(ID);
         uniqueID = ID;
         this.setTotalTweets(0);
+        creationTime = System.currentTimeMillis();
         
     }
     
@@ -36,6 +38,12 @@ public abstract class User extends DefaultMutableTreeNode implements Observer { 
     public int getTotalTweets() {
         return this.totalTweets;
     }
+    public long getCreationtime() {
+        return creationTime;
+    }
+    public long getLastUpdatedTime() {
+        return lastUpdatedTime;
+    }
     
     
     public void setTotalTweets(int n) {
@@ -44,5 +52,7 @@ public abstract class User extends DefaultMutableTreeNode implements Observer { 
     
     //visitor pattern
     public abstract void accept(Visitor visitor);
+    
+    
     
 }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package assignment.pkg2;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -14,24 +15,22 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.GridLayout;
-/**
- *
- * @author nathangoshay
- * TREE View Panel on AdminControlPanel
- *
- */
 
-public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!!!!!
+public class TreeView extends JPanel {
+    
+    int numSingleUsers = 0, numGroupUsers = 0;
 
     private DefaultMutableTreeNode rootNode;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private JScrollPane scrollPane;
+    public ArrayList<SingleUser> singleUserList = new ArrayList<>();
+    public ArrayList<UserGroup> groupUserList = new ArrayList<>();
 
-    public TreeView(DefaultMutableTreeNode root) {
+    public TreeView(DefaultMutableTreeNode node) {
         super(new GridLayout(1,0));
 
-        rootNode = root;
+        rootNode = node;
         setComponents();
         addComponents();
     }
@@ -57,6 +56,7 @@ public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!
             parentNode = (DefaultMutableTreeNode) parentNode.getParent();
         }
         addUser(parentNode, node, true);
+        numGroupUsers++;
     }
 
     public void addSingleUser(DefaultMutableTreeNode child) {
@@ -75,6 +75,7 @@ public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!
             parentNode = (DefaultMutableTreeNode) parentNode.getParent();
         }
         addUser(parentNode, child, true);
+        numSingleUsers++;
     }
 
 
@@ -132,5 +133,14 @@ public class TreeView extends JPanel {      // REWRITE THE NAMES AND SUCH!!!!!!!
         public void treeStructureChanged(TreeModelEvent e) {
         }
     }
+    
+    public int getTotalSingleUsers() {
+        return numSingleUsers;
+    }
+    
+    public int getTotalGroupUsers() {
+        return numGroupUsers;
+    }
 
+    
 }

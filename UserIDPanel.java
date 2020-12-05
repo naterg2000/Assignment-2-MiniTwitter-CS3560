@@ -5,7 +5,7 @@
  */
 package assignment.pkg2.Panels.UserInfoView;
 
-import assignment.pkg2.Panels.AdminView.ParentPanel;
+import assignment.pkg2.ParentPanel;
 
 /**
  *

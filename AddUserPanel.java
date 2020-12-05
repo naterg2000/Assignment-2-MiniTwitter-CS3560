@@ -5,6 +5,7 @@
  */
 package assignment.pkg2.Panels.AdminView;
 
+import assignment.pkg2.ParentPanel;
 import assignment.pkg2.Observer;
 import assignment.pkg2.SingleUser;
 import assignment.pkg2.SpecificInfo;
