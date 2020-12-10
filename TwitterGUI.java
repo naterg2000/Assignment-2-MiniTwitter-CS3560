@@ -7,6 +7,8 @@ package assignment.pkg2;
 
 import assignment.pkg2.Panels.AdminView.AddUserPanel;
 import assignment.pkg2.TreeView;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -26,91 +28,127 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class TwitterGUI {   //this class handles the GUI
     
-    JPanel panel = new JPanel();
+    private String userTarget, groupTarget;
+    
+    private int totalMessages = 0;
+    
+    public GridBagLayout adminLayout = new GridBagLayout();
+    private GridBagLayout userViewLayout = new GridBagLayout();
+    
+    public GridBagConstraints gbc = new GridBagConstraints();
+    
+    //private JPanel panel = new JPanel(); 
+    private JPanel adminPanel = new JPanel(new GridBagLayout());
+    private JPanel userViewPanel = new JPanel(new GridBagLayout());
+        
     private TreeView treeViewPanel;
-    JOptionPane infoPane;
+    private JOptionPane infoPane;
+    
+    
+    
+    
+    public JFrame frame = new JFrame("Mini Twitter");
+    public JFrame userViewFrame = new JFrame("User View");
         
     //admin panel
     //buttons
-    JButton addUserButton, 
+    private JButton addUserButton, 
             addGroupButton,
             openUserViewButton, 
             showUserTotalButton, 
             showTotalMessagesButton, 
             showGroupTotalButton,  
-            showPositivityPercentageButton = new JButton("Show positivity percentage"), 
+            showPositivityPercentageButton, 
             validateUserIDsButton, 
             mostRecentUpdatedUserButton;
+    
     //text fields and areas
-    JTextField userIDTextField, 
-               groupIDTextField;
-    JTextArea treeViewArea;
+    private JTextField userIDTextField, 
+                       groupIDTextField;
+    
+    private JTextArea treeViewArea;
     
     private DefaultMutableTreeNode root;
     private Map<String, Observer> allUsers;
     
+    
     //user view panel
     //buttons
-    public JButton followUserButton;
-    public JButton postTweetButton;
+    private JButton followUserButton, 
+                    postTweetButton, 
+                    toAdminViewButton;
     
     //text fields and areas
     //public JTextField userIDTextField;    might be able to reuse this one
-    public JTextArea followingListTextArea;
-    public JTextArea tweetFeedTextArea;
-    public JTextArea typeTweetTextArea;
+    public JTextArea followingListTextArea, 
+                    tweetFeedTextArea, 
+                    typeTweetTextArea;
     
-    public JFrame frame = new JFrame("Mini Twitter");
-    
-    private String userTarget, groupTarget;
-    
-    private int totalMessages = 0;
+    private static TwitterGUI INSTANCE;
     
     
-    public static void main(String[] args) {
-        
-        TwitterGUI t = new TwitterGUI();
-        
+    
+    public static void main(String[] args) { 
+        TwitterGUI t = new TwitterGUI(); 
     }
     
-    public TwitterGUI() {
-        
-        run();
-        
+    public TwitterGUI() { 
+        run(); 
     }
+    
+    //singleton pattern
+    public static TwitterGUI getInstance() {
+        if (INSTANCE == null) {
+            synchronized (Driver.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TwitterGUI();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+    
+    
     
     public void run() {
         
         //initializes the frame and all that then sets up the admin control panel
         frame.setSize(1000, 630);
-        /*
-        frame.add(adminControlPanel);
-        frame.add(userInfoPanel);
-        */
-        frame.add(panel);
-        //frame.setResizable(false);    //makes it so the window cnanot be resized
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        userViewFrame.setSize(1000, 630);
         
+        adminPanel.setLayout(adminLayout);
+        userViewPanel.setLayout(userViewLayout);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        
+        //add everthing to the JPanels
         initializeAdminPanel();
         initializeUserView();
         
-        createAdminPanel();
+        
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        
         
     }
     
     private void initializeAdminPanel() {
         
-        //buttons
+        //define buttons
         addUserButton = new JButton("Add User");
         addGroupButton = new JButton("Add Group");
-        openUserViewButton = new JButton("Show User View");
+        openUserViewButton = new JButton("Open User View");
         showUserTotalButton = new JButton("Show total users");
         showTotalMessagesButton = new JButton("Show total messages");
         showGroupTotalButton = new JButton("Show group total");
         showPositivityPercentageButton = new JButton("Show positivity percentage");
         validateUserIDsButton = new JButton("validate IDs");
         mostRecentUpdatedUserButton = new JButton("Show most recent updated user");
+        
+        //define  text fields
+        userIDTextField = new JTextField("User ID: ");
+        groupIDTextField = new JTextField("Group ID: ");
+        //treeViewArea = new JTextArea("Root");
         
         //creates functinallity for JButtons
         addUserButton.addActionListener(new ActionListener() { 
@@ -132,8 +170,9 @@ public class TwitterGUI {   //this class handles the GUI
         } );
         
         openUserViewButton.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) { 
+            public void actionPerformed(ActionEvent e) {
                 openUserViewButtonPressed();
+                System.out.println("Calling openUserView()");
             } 
         } );
         
@@ -174,77 +213,104 @@ public class TwitterGUI {   //this class handles the GUI
         } );
         
         
-        //text fields
-        userIDTextField = new JTextField("User ID: ");
-        groupIDTextField = new JTextField("Group ID: ");
-        treeViewArea = new JTextArea("Root");
-        
-        //add components to panel
-        panel.add(addUserButton);
-        panel.add(addGroupButton);
-        panel.add(openUserViewButton);
-        panel.add(showUserTotalButton);
-        panel.add(showTotalMessagesButton);
-        panel.add(showGroupTotalButton);
-        panel.add(showPositivityPercentageButton);
-        
-        panel.add(userIDTextField);
-        panel.add(groupIDTextField);
-        
-        //adds the tree view panel to the general panel
-        treeViewPanel.add(treeViewArea);
-        panel.add(treeViewPanel);
-        
         allUsers = new HashMap<String, Observer>();
         root = new UserGroup("Root");
         allUsers.put(((User) root).getUniqueID(), (Observer) this.root);
         
+        
         treeViewPanel = new TreeView(root);
         
-    }
-    
-    private void initializeUserView() {
-        
-        //buttons
-        followUserButton = new JButton("Follow user");
-        postTweetButton = new JButton("Post tweet");
-
-        //text areas
-        userIDTextField = new JTextField("User ID: ");
-        followingListTextArea = new JTextArea("User is following these other users...");
-        typeTweetTextArea = new JTextArea("Type tweet here... ");
-        tweetFeedTextArea = new JTextArea("User's feed");
-    
-    
-        //add cpmponents to panel
-        panel.add(followUserButton);
-        panel.add(postTweetButton);
-        panel.add(userIDTextField);
-        panel.add(followingListTextArea);
-        panel.add(typeTweetTextArea);
-        panel.add(tweetFeedTextArea);
         
         
-    }
-    
-    //sets all the bounds for the components
-    public void createAdminPanel() {
+        //tree view
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.ipady = 40;      //make this component tall
+        gbc.weightx = 1.0;
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        adminPanel.add(treeViewPanel, gbc);
         
-        //set up sizes and positions
-        treeViewArea.setBounds(15, 15, 333, 570);
         
-        userIDTextField.setBounds(363, 15, 273, 100);
-        groupIDTextField.setBounds(363, 130, 273, 100);
-        addUserButton.setBounds(693, 15, 273, 100);
-        addGroupButton.setBounds(693, 130, 273, 100);
-        openUserViewButton.setBounds(363, 245, 606, 100);
-        showUserTotalButton.setBounds(363, 360, 273, 100);
-        showGroupTotalButton.setBounds(693, 360, 273, 100);
-        showTotalMessagesButton.setBounds(363, 485, 273, 100);
-        showPositivityPercentageButton.setBounds(693, 485, 273, 100);
+        //user ID text field
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        //gbc.ipady = 40;      //make this component tall
+        gbc.weightx = 0.0;
+        gbc.gridwidth = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        adminPanel.add(userIDTextField, gbc);
+        
+        //group ID text field
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        //gbc.ipady = 40;      //make this component tall
+        gbc.weightx = 0.0;
+        gbc.gridwidth = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        adminPanel.add(groupIDTextField, gbc);
+        
+        //add user button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        adminPanel.add(addUserButton, gbc);
+        
+        //add group button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        adminPanel.add(addGroupButton, gbc);
+        
+        //open user view button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        adminPanel.add(openUserViewButton, gbc);
+        
+        //show user total button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        adminPanel.add(showUserTotalButton, gbc);
+        
+        //open group total button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        adminPanel.add(showGroupTotalButton, gbc);
+        
+        //show total messages button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        adminPanel.add(showTotalMessagesButton, gbc);
+        
+        //open group total button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 2;
+        gbc.gridy = 5;
+        adminPanel.add(showPositivityPercentageButton, gbc);
+        
+        
+        frame.add(adminPanel);
+        
+        
+        
+        //treeViewArea.setBounds(15, 15, 333, 570);
+        
+         
         
         
         //make components visible 
+        
         addUserButton.setVisible(true);
         addGroupButton.setVisible(true);
         openUserViewButton.setVisible(true);
@@ -255,15 +321,47 @@ public class TwitterGUI {   //this class handles the GUI
         groupIDTextField.setVisible(true);
         showPositivityPercentageButton.setVisible(true);
         
-        treeViewArea.setVisible(true);
+        //treeViewArea.setVisible(true);
+        
+        
+        adminPanel.setVisible(true);
+        
+        
         
         
         
     }
     
-    //sets all the bounds for the components
-    public void createUserView() {
+    private void initializeUserView() {
+        
+        //buttons
+        followUserButton = new JButton("Follow user");
+        postTweetButton = new JButton("Post tweet");
+        toAdminViewButton = new JButton("Back to Admin View");
+
+        //text areas
+        userIDTextField = new JTextField("User ID: ");
+        followingListTextArea = new JTextArea("User is following these other users...");
+        typeTweetTextArea = new JTextArea("Type tweet here... ");
+        tweetFeedTextArea = new JTextArea("User's feed");
     
+    
+        
+        //JButton functinality
+        followUserButton.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) { 
+                followUserButtonPressed();
+            } 
+        } );
+        
+        postTweetButton.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) { 
+                postTweetButtonPressed();
+            } 
+        } );
+        
+        
+        
         
         //set all the sizes and everything
         userIDTextField.setBounds(15, 15, 476, 100);
@@ -273,98 +371,76 @@ public class TwitterGUI {   //this class handles the GUI
         postTweetButton.setBounds(800, 300, 170, 100);
         tweetFeedTextArea.setBounds(15, 413, 955, 150);
         
-        
-        //set visibilities
-        userIDTextField.setVisible(true);
-        followUserButton.setVisible(true);
-        postTweetButton.setVisible(true);
-        followingListTextArea.setVisible(true);
-        tweetFeedTextArea.setVisible(true);
+        userViewFrame.add(userViewPanel);
         
         
-        //make user view components visible
-        userIDTextField.setVisible(true);
-        followUserButton.setVisible(true);
-        postTweetButton.setVisible(true);
-        followingListTextArea.setVisible(true);
-        tweetFeedTextArea.setVisible(true);
-        
-        //make admin control panel components invisible
-        addUserButton.setVisible(false);
-        addGroupButton.setVisible(false);
-        openUserViewButton.setVisible(false);
-        showUserTotalButton.setVisible(false);
-        showTotalMessagesButton.setVisible(false);
-        showGroupTotalButton.setVisible(false);
-        userIDTextField.setVisible(false);
-        groupIDTextField.setVisible(false);
-        showPositivityPercentageButton.setVisible(false);
-        
-        treeViewArea.setVisible(false);
+        userViewPanel.setVisible(true);
         
     }
     
-    //sets the panels to be visible
-    public void makeAdminPanelVisible() {
+    //makes a new frame for the user view. Get's the target user ID's information
+    public void createUserView() {
         
+        //userID text field
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        userViewPanel.add(userIDTextField, gbc);
         
-        //make admin control panel components invisible
-        addUserButton.setVisible(true);
-        addGroupButton.setVisible(true);
-        openUserViewButton.setVisible(true);
-        showUserTotalButton.setVisible(true);
-        showTotalMessagesButton.setVisible(true);
-        showGroupTotalButton.setVisible(true);
-        userIDTextField.setVisible(true);
-        groupIDTextField.setVisible(true);
-        showPositivityPercentageButton.setVisible(true);
+        //followUser button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        userViewPanel.add(followUserButton, gbc);
         
-        treeViewArea.setVisible(false);
+        //current following view
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.ipadx = 20;
+        gbc.weightx = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        userViewPanel.add(followingListTextArea, gbc);
         
-        //make user view components visible
-        userIDTextField.setVisible(false);
-        followUserButton.setVisible(false);
-        postTweetButton.setVisible(false);
-        followingListTextArea.setVisible(false);
-        tweetFeedTextArea.setVisible(false);
+        gbc.ipadx = 0;
+        
+        //tweet message text view
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        userViewPanel.add(typeTweetTextArea, gbc);
+        
+        //post tweet button
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        userViewPanel.add(postTweetButton, gbc);
+        
+        //text view of tweets
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        userViewPanel.add(tweetFeedTextArea, gbc);
+        
+        userViewFrame.setVisible(true);
         
         
     }
     
-    public void makeUserViewPanelVisible() {
-        
-        
-        
-        //make user view components visible
-        userIDTextField.setVisible(true);
-        followUserButton.setVisible(true);
-        postTweetButton.setVisible(true);
-        followingListTextArea.setVisible(true);
-        tweetFeedTextArea.setVisible(true);
-        
-        //make admin control panel components invisible
-        addUserButton.setVisible(false);
-        addGroupButton.setVisible(false);
-        openUserViewButton.setVisible(false);
-        showUserTotalButton.setVisible(false);
-        showTotalMessagesButton.setVisible(false);
-        showGroupTotalButton.setVisible(false);
-        userIDTextField.setVisible(false);
-        groupIDTextField.setVisible(false);
-        showPositivityPercentageButton.setVisible(false);
-        
-        treeViewArea.setVisible(false);
-        
-    }
     
-    //admin panel buttons
+    
+    //admin panel button functinality
     
     //when addUserButton is pressed...
     public void addUserButtonPressed() {
         
         //sets the target user to be the string value after position 8 which is the space after the colon
         userTarget = userIDTextField.getText().substring(8);
-        
+                
         //from here, the user is added to the treeView
         Observer child = new SingleUser(userTarget);
         
@@ -392,8 +468,10 @@ public class TwitterGUI {   //this class handles the GUI
     
     public void openUserViewButtonPressed() {
         
-        //calls createUserView() method
+        
         createUserView();
+        
+        
         
     }
     
@@ -444,6 +522,20 @@ public class TwitterGUI {   //this class handles the GUI
             totalPositiveMessages += treeViewPanel.singleUserList.get(i).getPositiveTweetCount();
         
         System.out.println("Positiveity percentage: " + (totalPositiveMessages/totalMessages) * 100);
+        
+        
+    }
+    
+    //user view functionaolity
+    
+    void followUserButtonPressed() {
+        
+        
+        
+    }
+    
+    void postTweetButtonPressed() {
+        
         
         
     }
